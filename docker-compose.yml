@@ -1,0 +1,30 @@
+version: "3"
+services:
+  app:
+    container_name: url-qr-app
+    image: url-qr-app-v1
+    build:
+      context: .                          #docker file path (. means root directory)
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./info:/workspace/app/info
+    env_file:
+      - ./src/main/resources/application.properties
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/url_qr_project_db"
+    restart: always
+
+  db:
+    container_name: url-qr-app-db
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: "url_qr_project_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
